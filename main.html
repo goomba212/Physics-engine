@@ -1,27 +1,72 @@
 <!DOCTYPE html>
 <html>
 <body>
-<canvas id="myCanvas" width="200" height="200" style="border:1px solid #000000;">
+<canvas id="myCanvas" width="400" height="300" style="border:1px solid #000000;">
 Sorry, your browser does not support canvas.
 </canvas>
+<p id="test"></p>
 
 <script>
-let y  = 40;
-setInterval(draw, 1, y);
+function clamp(val, min, max){
+    if (val > max){
+        return max;
+    }
+    if (val < min){
+        return min;
+    }
+    return val;
+}
 
-function draw(){
-    if (y <= 200){
-        const canvas = document.getElementById("myCanvas");
-        const ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, 200, 200);
-        ctx.beginPath();
-        ctx.arc(0, y, 40, 0, 2 * Math.PI);
-        ctx.fillStyle = "blue";
-        ctx.fill();
-        ctx.lineWidth = 4;
-        y += 1;
+
+function updateAll(balls){
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, 400, 300);
+
+    for (i = 0; i <= balls.length; i++){
+        update(balls[i]);
     }
 }
+
+function update(updateBall){
+    let friction = 1;
+    
+    if (updateBall[0] > 400 || updateBall[0] < 0){
+        updateBall[3] = -(updateBall[3]);
+    }
+    
+    if (updateBall[1] > 300 || updateBall[1] < 0){
+        updateBall[4] = -(updateBall[4]);
+    }
+    /*
+    for (i = 0; i <= balls.length; i++){
+        //if (balls[i][2]+updateBall[2] <= Math.sqrt(Math.abs(balls[i][0]-updateBall[0])+Math.abs(balls[i][1]-updateBall[1]))){
+        document.getElementById("test").innerHTML = "hello";
+        
+    }
+    */
+    updateBall[0] += updateBall[3];
+    updateBall[1] += updateBall[4];
+    draw(updateBall);
+}
+
+function draw(drawBall){
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(drawBall[0], drawBall[1], drawBall[2], 0, 2 * Math.PI);
+    ctx.fillStyle = "blue";
+    ctx.fill();
+    ctx.lineWidth = 4;
+}
+
+
+let speed = 16.67;
+let ball = new Array(0, 100, 20, 3, 0); 
+let ball2 = new Array(200, 100, 20, -3, 0); 
+
+setInterval(updateAll, speed, [ball, ball2]);
+
 </script>
 
 </body>
